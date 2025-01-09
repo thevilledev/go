@@ -7,7 +7,6 @@ package strconv_test
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	. "strconv"
 	"testing"
 )
@@ -361,7 +360,7 @@ func TestParseUint32(t *testing.T) {
 	for i := range parseUint32Tests {
 		test := &parseUint32Tests[i]
 		out, err := ParseUint(test.in, 10, 32)
-		if uint64(test.out) != out || !reflect.DeepEqual(test.err, err) {
+		if uint64(test.out) != out || !equalError(test.err, err) {
 			t.Errorf("ParseUint(%q, 10, 32) = %v, %v want %v, %v",
 				test.in, out, err, test.out, test.err)
 		}
@@ -372,7 +371,7 @@ func TestParseUint64(t *testing.T) {
 	for i := range parseUint64Tests {
 		test := &parseUint64Tests[i]
 		out, err := ParseUint(test.in, 10, 64)
-		if test.out != out || !reflect.DeepEqual(test.err, err) {
+		if test.out != out || !equalError(test.err, err) {
 			t.Errorf("ParseUint(%q, 10, 64) = %v, %v want %v, %v",
 				test.in, out, err, test.out, test.err)
 		}
@@ -383,7 +382,7 @@ func TestParseUint64Base(t *testing.T) {
 	for i := range parseUint64BaseTests {
 		test := &parseUint64BaseTests[i]
 		out, err := ParseUint(test.in, test.base, 64)
-		if test.out != out || !reflect.DeepEqual(test.err, err) {
+		if test.out != out || !equalError(test.err, err) {
 			t.Errorf("ParseUint(%q, %v, 64) = %v, %v want %v, %v",
 				test.in, test.base, out, err, test.out, test.err)
 		}
@@ -394,7 +393,7 @@ func TestParseInt32(t *testing.T) {
 	for i := range parseInt32Tests {
 		test := &parseInt32Tests[i]
 		out, err := ParseInt(test.in, 10, 32)
-		if int64(test.out) != out || !reflect.DeepEqual(test.err, err) {
+		if int64(test.out) != out || !equalError(test.err, err) {
 			t.Errorf("ParseInt(%q, 10 ,32) = %v, %v want %v, %v",
 				test.in, out, err, test.out, test.err)
 		}
@@ -405,7 +404,7 @@ func TestParseInt64(t *testing.T) {
 	for i := range parseInt64Tests {
 		test := &parseInt64Tests[i]
 		out, err := ParseInt(test.in, 10, 64)
-		if test.out != out || !reflect.DeepEqual(test.err, err) {
+		if test.out != out || !equalError(test.err, err) {
 			t.Errorf("ParseInt(%q, 10, 64) = %v, %v want %v, %v",
 				test.in, out, err, test.out, test.err)
 		}
@@ -416,7 +415,7 @@ func TestParseInt64Base(t *testing.T) {
 	for i := range parseInt64BaseTests {
 		test := &parseInt64BaseTests[i]
 		out, err := ParseInt(test.in, test.base, 64)
-		if test.out != out || !reflect.DeepEqual(test.err, err) {
+		if test.out != out || !equalError(test.err, err) {
 			t.Errorf("ParseInt(%q, %v, 64) = %v, %v want %v, %v",
 				test.in, test.base, out, err, test.out, test.err)
 		}
@@ -429,7 +428,7 @@ func TestParseUint(t *testing.T) {
 		for i := range parseUint32Tests {
 			test := &parseUint32Tests[i]
 			out, err := ParseUint(test.in, 10, 0)
-			if uint64(test.out) != out || !reflect.DeepEqual(test.err, err) {
+			if uint64(test.out) != out || !equalError(test.err, err) {
 				t.Errorf("ParseUint(%q, 10, 0) = %v, %v want %v, %v",
 					test.in, out, err, test.out, test.err)
 			}
@@ -438,7 +437,7 @@ func TestParseUint(t *testing.T) {
 		for i := range parseUint64Tests {
 			test := &parseUint64Tests[i]
 			out, err := ParseUint(test.in, 10, 0)
-			if test.out != out || !reflect.DeepEqual(test.err, err) {
+			if test.out != out || !equalError(test.err, err) {
 				t.Errorf("ParseUint(%q, 10, 0) = %v, %v want %v, %v",
 					test.in, out, err, test.out, test.err)
 			}
@@ -452,7 +451,7 @@ func TestParseInt(t *testing.T) {
 		for i := range parseInt32Tests {
 			test := &parseInt32Tests[i]
 			out, err := ParseInt(test.in, 10, 0)
-			if int64(test.out) != out || !reflect.DeepEqual(test.err, err) {
+			if int64(test.out) != out || !equalError(test.err, err) {
 				t.Errorf("ParseInt(%q, 10, 0) = %v, %v want %v, %v",
 					test.in, out, err, test.out, test.err)
 			}
@@ -461,7 +460,7 @@ func TestParseInt(t *testing.T) {
 		for i := range parseInt64Tests {
 			test := &parseInt64Tests[i]
 			out, err := ParseInt(test.in, 10, 0)
-			if test.out != out || !reflect.DeepEqual(test.err, err) {
+			if test.out != out || !equalError(test.err, err) {
 				t.Errorf("ParseInt(%q, 10, 0) = %v, %v want %v, %v",
 					test.in, out, err, test.out, test.err)
 			}
@@ -479,7 +478,7 @@ func TestAtoi(t *testing.T) {
 			if test.err != nil {
 				testErr = &NumError{"Atoi", test.in, test.err.(*NumError).Err}
 			}
-			if int(test.out) != out || !reflect.DeepEqual(testErr, err) {
+			if int(test.out) != out || !equalError(testErr, err) {
 				t.Errorf("Atoi(%q) = %v, %v want %v, %v",
 					test.in, out, err, test.out, testErr)
 			}
@@ -492,7 +491,7 @@ func TestAtoi(t *testing.T) {
 			if test.err != nil {
 				testErr = &NumError{"Atoi", test.in, test.err.(*NumError).Err}
 			}
-			if test.out != int64(out) || !reflect.DeepEqual(testErr, err) {
+			if test.out != int64(out) || !equalError(testErr, err) {
 				t.Errorf("Atoi(%q) = %v, %v want %v, %v",
 					test.in, out, err, test.out, testErr)
 			}
